@@ -1,7 +1,13 @@
+<% if flash[:notice] %>
+<p>*** <%= flash[:notice] %> ***</p>
+<% end %>
+
 <h1>AR Todos Sinatra Example</h1>
+<a href='/add'>Add A task</a>
 <ol>
 <% @tasks.each do |task| %>
   <li><%= task.name %></li>
 <% end %>
 </ol>
+
 

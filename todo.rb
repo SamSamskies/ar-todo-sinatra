@@ -1,12 +1,35 @@
 require_relative 'config/application'
 require 'sinatra'
+require 'rack-flash'
 
 set :root, File.dirname(__FILE__)
 set :views, Proc.new { File.join(root, "app/views") }
 
+enable :sessions
+use Rack::Flash
+
+after do
+  ActiveRecord::Base.connection.close
+end
+
+
 get '/' do
   @tasks = Task.all
   erb :index
+end
+
+get '/add' do
+  erb :add
+end
+
+post '/add' do
+  task = Task.create(name: params[:name])
+    if task.valid?
+      flash[:notice] = "Appended '#{params[:name]}' to your TODO list..."
+    else
+      flash[:notice] = "Error: #{task.errors.messages[:name].first}"
+    end
+  redirect '/'
 end
 
 # class TasksController
